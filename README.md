@@ -24,7 +24,7 @@ Cookiecutter is a Python3 tool, this script requires Python version >= 3.4 with
 cookiecutter installed:
 
 ```bash
-$~: python3 -m pip install cookiecutter
+python3 -m pip install cookiecutter
 ```
 
 To be able to copy the settings file you also need Logtalk installed with
@@ -42,7 +42,7 @@ Do not create a directory for your project, one will be created for you.
 Cookiecutter can download and run this template with:
 
 ```bash
-$~: cookiecutter https://github.com/PaulBrownMagic/cookiecutter-logtalk
+cookiecutter https://github.com/PaulBrownMagic/cookiecutter-logtalk
 ```
 
 Then follow the prompts to create your application.
@@ -54,10 +54,12 @@ than plain cookiecutter, such as trying to determine the author name from your
 git config, falling back to the `$USER` environment variable. It saves a little
 time and typing.
 
+Follow the instructions for getting started with `cookiecutter` above and
+you'll find the code you need has been downloaded into a `.cookiecutters`
+directory, you can access the script from there.
+
 ```bash
-$~: mkdir ~/.cookiecutters
-$~: git clone https://github.com/PaulBrownMagic/cookiecutter-logtalk ~/.cookiecutters/
-$~: ~/.cookiecutters/lgtinit
+~/.cookiecutters/lgtinit
 ```
 
 I like to either create a soft-link/shortcut in my local bin directory to the
