@@ -4,5 +4,5 @@
 	"author": "",
 	"settings": "y",
 	"git": "y",
-	"date": "{% now 'local', '%Y-%m-%d' %}",
+	"date": "{% now 'local', '%Y-%m-%d' %}"
 }
