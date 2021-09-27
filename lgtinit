@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""Use Cookiecutter to make a Logtalk project
+
+Run this script for nicer defaults than plain cookiecutter
+"""
+
+from datetime import date
+from functools import reduce
+import os
+import re
+import subprocess as sp
+from typing import Optional, Callable, List
+
+from cookiecutter.main import cookiecutter
+
+DictFunction = Callable[[dict], dict]
+
+
+def ask(param: str, default: Optional[str] = None) -> str:
+    """Ask the user for a parameter value, optional default"""
+    if default is not None:
+        param += f" [{default}]"
+    else:
+        default = ""  # Coerce to string for return
+    answer = input(param + ": ")
+    return answer if answer else default
+
+
+def add_author(context_dict: dict) -> dict:
+    """Add Author info from git config"""
+    result = sp.run(
+        ["git", "config", "user.name"],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    author = result.stdout.strip() if result.returncode == 0 else ""
+    if author == "" and "USER" in os.environ:
+        author = os.environ["USER"]
+    context_dict["author"] = ask("author", default=author)
+    return context_dict
+
+
+def add_project(context_dict: dict) -> dict:
+    """Add project information"""
+    context_dict["project_name"] = ask("project_name")
+    context_dict["project_slug"] = re.sub(
+        " |-", "_", context_dict["project_name"]
+    ).lower()
+    context_dict["settings"] = ask("include settings.lgt?", default="y")
+    context_dict["git"] = ask("git init?", default="y")
+    return context_dict
+
+
+def add_date(context_dict: dict) -> dict:
+    """Add the date to the context dict"""
+    context_dict["date"] = date.today().isoformat()
+    return context_dict
+
+
+def compose(*functions):
+    """Compose functions so compose(f, g)(x) === f(g(x))"""
+    return reduce(lambda f, g: lambda x: f(g(x)), functions, lambda x: x)
+
+
+def apply_all(functions: List[DictFunction], context_dict: dict) -> dict:
+    """Sequentially apply the functions to the context_dict"""
+
+    def apply_function(context_dict: dict, function: DictFunction) -> dict:
+        return function(context_dict)
+
+    return reduce(apply_function, functions, context_dict)
+
+
+add_context = compose(add_author, add_project, add_date)
+
+
+if __name__ == "__main__":
+    cookiecutter(
+        "cookiecutter-logtalk",
+        no_input=True,
+        extra_context=add_context(dict()),
+    )
