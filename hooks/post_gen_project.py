@@ -49,6 +49,12 @@ def copy_settings() -> None:
     shutil.copyfile(settings, "settings.lgt")
 
 
+def move_gitignore() -> None:
+    """mv gitignore .gitignore"""
+    shutil.move("gitignore", ".gitignore")
+
+
 if __name__ == "__main__":
+    move_gitignore()
     copy_settings()
     git_init()
